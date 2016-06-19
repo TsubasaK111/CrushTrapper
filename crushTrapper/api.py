@@ -16,7 +16,7 @@ from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
     ScoreForms
 from utils import get_by_urlsafe
 
-NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
+NEW_TRAP_REQUEST = endpoints.ResourceContainer(NewGameForm)
 GET_GAME_REQUEST = endpoints.ResourceContainer(
         urlsafe_game_key=messages.StringField(1),)
 MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
@@ -27,9 +27,10 @@ USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
-@endpoints.api(name='guess_a_number', version='v1')
-class GuessANumberApi(remote.Service):
-    """Game API"""
+@endpoints.api(name='crush_trapper', version='v1')
+class CrushTrapperApi(remote.Service):
+    """Trap your crush with a Google App Engine API!"""
+    
     @endpoints.method(request_message=USER_REQUEST,
                       response_message=StringMessage,
                       path='user',
@@ -45,7 +46,7 @@ class GuessANumberApi(remote.Service):
         return StringMessage(message='User {} created!'.format(
                 request.user_name))
 
-    @endpoints.method(request_message=NEW_GAME_REQUEST,
+    @endpoints.method(request_message=NEW_TRAP_REQUEST,
                       response_message=GameForm,
                       path='game',
                       name='new_game',
