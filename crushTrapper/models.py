@@ -40,7 +40,7 @@ class Trap(ndb.Model):
         form                    = TrapForm()
         form.urlsafe_key        = self.key.urlsafe()
         form.attempts_remaining = self.attempts_remaining
-        form.closed            = self.closed
+        form.closed             = self.closed
         form.message            = message
         return form
 
@@ -50,7 +50,7 @@ class Trap(ndb.Model):
         self.closed = True
         self.put()
         # Add the trap to the score 'board'
-        score = Score(user=self.setter, date=date.today(), won=won,
+        score = Score(user=self.setter, date=date.today(), trapped=trapped,
                       guesses=self.attempts_allowed - self.attempts_remaining)
         score.put()
 
@@ -59,11 +59,11 @@ class Score(ndb.Model):
     """Score object"""
     user = ndb.KeyProperty(required=True, kind='User')
     date = ndb.DateProperty(required=True)
-    won = ndb.BooleanProperty(required=True)
+    trapped = ndb.BooleanProperty(required=True)
     guesses = ndb.IntegerProperty(required=True)
 
     def to_form(self):
-        return ScoreForm(user_name=self.user.get().name, won=self.won,
+        return ScoreForm(user_name=self.user.get().name, trapped=self.trapped,
                          date=str(self.date), guesses=self.guesses)
 
 
@@ -83,8 +83,8 @@ class NewTrapForm(messages.Message):
     attempts = messages.IntegerField(4, default=5)
 
 
-class MakeMoveForm(messages.Message):
-    """Used to make a move in an existing trap"""
+class MakeGuessForm(messages.Message):
+    """Used to make a guess in an existing trap"""
     guess = messages.IntegerField(1, required=True)
 
 
@@ -92,7 +92,7 @@ class ScoreForm(messages.Message):
     """ScoreForm for outbound Score information"""
     user_name = messages.StringField(1, required=True)
     date = messages.StringField(2, required=True)
-    won = messages.BooleanField(3, required=True)
+    trapped = messages.BooleanField(3, required=True)
     guesses = messages.IntegerField(4, required=True)
 
 
